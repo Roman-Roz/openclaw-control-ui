@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - OpenClaw Control UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ff9d;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cyberpunk-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border: 2px solid #00ff9d;
+            border-radius: 10px;
+            background: rgba(0, 255, 157, 0.05);
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);
+            }
+            to {
+                box-shadow: 0 0 50px rgba(0, 255, 157, 0.4);
+            }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #00ff9d;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #8affc1;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #00ff9d;
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 157, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff9d, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .contact-icon {
+            font-size: 3rem;
+            color: #00ff9d;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-title {
+            font-size: 1.5rem;
+            color: #00ff9d;
+            margin-bottom: 1rem;
+        }
+
+        .contact-details {
+            color: #8affc1;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-link {
+            display: inline-block;
+            background: transparent;
+            color: #00ff9d;
+            border: 2px solid #00ff9d;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .contact-link:hover {
+            background: #00ff9d;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+        }
+
+        .business-hours {
+            background: rgba(0, 255, 157, 0.1);
+            border-left: 4px solid #00ff9d;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .business-hours h3 {
+            color: #00ff9d;
+            margin-bottom: 1rem;
+        }
+
+        .hours-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .hours-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+            color: #8affc1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 157, 0.3);
+            color: #8affc1;
+            font-size: 0.9rem;
+        }
+
+        .quick-contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .quick-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 157, 0.1);
+            color: #00ff9d;
+            border: 1px solid #00ff9d;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            background: #00ff9d;
+            color: #0a0a0a;
+        }
+
+        @media (max-width: 768px) {
+            .cyberpunk-container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-contact {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="cyberpunk-container">
+        <div class="header">
+            <h1>📞 CONTACT US</h1>
+            <div class="subtitle">OpenClaw Control UI - Get in Touch with Roman Corporation</div>
+        </div>
+
+        <div class="contact-grid">
+            <div class="card">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h3 class="contact-title">Phone</h3>
+                <div class="contact-details">
+                    <p>Direct line for quick support and inquiries</p>
+                    <p style="font-size: 1.3rem; font-weight: bold; margin-top: 1rem;">+7 (989) 421-54-08</p>
+                </div>
+                <a href="tel:+79894215408" class="contact-link">
+                    <i class="fas fa-phone"></i> Call Now
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3 class="contact-title">Email</h3>
+                <div class="contact-details">
+                    <p>For business inquiries, support, and partnerships</p>
+                    <p style="font-size: 1.1rem; margin-top: 1rem; word-break: break-all;">roman_corporation@mail.ru</p>
+                </div>
+                <a href="mailto:roman_corporation@mail.ru" class="contact-link">
+                    <i class="fas fa-paper-plane"></i> Send Email
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="contact-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="contact-title">Messaging</h3>
+                <div class="contact-details">
+                    <p>Connect via instant messaging platforms</p>
+                    <p style="margin-top: 1rem;">Available on WhatsApp, Telegram, and Signal</p>
+                </div>
+                <div class="quick-contact">
+                    <a href="https://wa.me/79894215408" target="_blank" class="quick-btn">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="tg://resolve?phone=79894215408" class="quick-btn">
+                        <i class="fab fa-telegram"></i> Telegram
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="business-hours">
+            <h3><i class="fas fa-clock"></i> BUSINESS HOURS</h3>
+            <ul class="hours-list">
+                <li>
+                    <span>Monday - Friday</span>
+                    <span>9:00 AM - 6:00 PM (GMT+7)</span>
+                </li>
+                <li>
+                    <span>Saturday</span>
+                    <span>10:00 AM - 4:00 PM (GMT+7)</span>
+                </li>
+                <li>
+                    <span>Sunday</span>
+                    <span>Emergency Support Only</span>
+                </li>
+                <li>
+                    <span>24/7 Support</span>
+                    <span>For Critical Issues</span>
+                </li>
+            </ul>
+            <p style="color: #8affc1; margin-top: 1rem;">
+                <i class="fas fa-info-circle"></i> Response time: Within 2 hours during business hours, 24 hours maximum.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 class="contact-title"><i class="fas fa-rocket"></i> QUICK LINKS</h3>
+            <div class="quick-contact">
+                <a href="/" class="quick-btn">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/payment-info.html" class="quick-btn" style="background: #00ff9d; color: #0a0a0a;">
+                    <i class="fas fa-credit-card"></i> Payment Info
+                </a>
+                <a href="https://github.com/Roman-Roz/openclaw-control-ui" target="_blank" class="quick-btn">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://vercel.com/dashboard" target="_blank" class="quick-btn">
+                    <i class="fas fa-cloud"></i> Vercel
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>OpenClaw Control UI v2.0 | Contact Portal | © 2026 Roman Corporation</p>
+            <p>Phone: <span style="color: #00ff9d;">+7 (989) 421-54-08</span> | Email: <span style="color: #00ff9d;">roman_corporation@mail.ru</span></p>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #8affc1;">
+                <i class="fas fa-lock"></i> All communications are confidential and protected.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add current time to business hours
+        function updateBusinessHours() {
+            const now = new Date();
+            const options = { 
+                timeZone: 'Asia/Krasnoyarsk',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            };
+            const timeInKrasnoyarsk = now.toLocaleTimeString('en-US', options);
+            
+            // Check if we're within business hours
+            const hour = now.getHours();
+            const day = now.getDay();
+            
+            let status = '🔴 CLOSED';
+            let statusColor = '#ff6464';
+            
+            if (day >= 1 && day <= 5) { // Monday-Friday
+                if (hour >= 2 && hour < 11) { // 9:00-18:00 GMT+7
+                    status = '🟢 OPEN';
+                    statusColor = '#00ff9d';
+                }
+            } else if (day === 6) { // Saturday
+                if (hour >= 3 && hour < 9) { // 10:00-16:00 GMT+7
+                    status = '🟢 OPEN';
+                    statusColor = '#00ff9d';
+                }
+            }
+            
+            // Add status to page
+            const statusElement = document.createElement('p');
+            statusElement.innerHTML = `<strong>Current Status:</strong> <span style="color: ${statusColor}">${status}</span> (${timeInKrasnoyarsk} GMT+7)`;
+            statusElement.style.marginTop = '1rem';
+            statusElement.style.padding = '0.5rem';
+            statusElement.style.background = 'rgba(0, 255, 157, 0.05)';
+            statusElement.style.borderRadius = '5px';
+            
+            const businessHours = document.querySelector('.business-hours');
+            businessHours.appendChild(statusElement);
+        }
+        
+        window.addEventListener('load', updateBusinessHours);
+    </script>
+</body>
+</html>
