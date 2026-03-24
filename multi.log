@@ -1,0 +1,19 @@
+
+  🌐 SIMPLE MULTICHANNEL SERVER
+  🇷🇺 ДЛЯ РОССИЙСКОГО РЫНКА
+  
+🚀 Сервер запущен на порту: 3003
+📨 Webhook: http://localhost:3003/webhook/github/multi
+🔧 Тестирование: http://localhost:3003/test/channels
+⚙️  Статус: http://localhost:3003/channels/status
+❤️  Health: http://localhost:3003/health
+
+📱 ПОДДЕРЖИВАЕМЫЕ КАНАЛЫ (демо-режим):
+   • 📧 Email уведомления: ✅ (демо)
+   • 🎮 Discord: ✅ (демо)
+   • 👥 VK (ВКонтакте): ✅ (демо)
+   • 🟡 Яндекс.Мессенджер: ✅ (демо)
+
+⚠️  ВНИМАНИЕ: Демо-режим. Сообщения не отправляются.
+    Для реальной работы настройте каналы в конфигурации.
+    

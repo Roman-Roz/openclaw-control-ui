@@ -1,0 +1,120 @@
+/* 
+ * Шрифты для киберпанк-интерфейса
+ * Используем Google Fonts + локальные fallback
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+/* Локальные fallback шрифты */
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Orbitron Regular'), local('Orbitron-Regular'),
+       url('Orbitron-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Orbitron Bold'), local('Orbitron-Bold'),
+       url('Orbitron-Bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Orbitron Black'), local('Orbitron-Black'),
+       url('Orbitron-Black.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 300;
+  src: local('JetBrains Mono Light'), local('JetBrainsMono-Light'),
+       url('JetBrainsMono-Light.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('JetBrains Mono Regular'), local('JetBrainsMono-Regular'),
+       url('JetBrainsMono-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: local('JetBrains Mono Bold'), local('JetBrainsMono-Bold'),
+       url('JetBrainsMono-Bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Киберпанк-шрифт для заголовков */
+@font-face {
+  font-family: 'Cyberpunk';
+  src: url('cyberpunk.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Стили для текста */
+.cyber-title {
+  font-family: 'Orbitron', 'Cyberpunk', sans-serif;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.cyber-subtitle {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.cyber-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+}
+
+.cyber-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 300;
+  font-size: 0.9em;
+}
+
+/* Эффекты текста */
+.text-glow {
+  text-shadow: 0 0 10px currentColor;
+}
+
+.text-neon-blue {
+  color: #00f3ff;
+  text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff;
+}
+
+.text-neon-purple {
+  color: #9d00ff;
+  text-shadow: 0 0 10px #9d00ff, 0 0 20px #9d00ff;
+}
+
+.text-neon-pink {
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+
+.text-neon-green {
+  color: #00ff00;
+  text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+}

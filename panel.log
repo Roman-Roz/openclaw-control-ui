@@ -1,0 +1,32 @@
+📦 Node.js version: v22.22.1
+🔄 Updating GitHub cache...
+✅ GitHub cache updated (demo mode)
+
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  ██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██
+  ██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██
+  ██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██
+  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+   🦞 OPENCLAW CYBERPUNK CONTROL PANEL v2.0.0
+   🚀 WITH GITHUB INTEGRATION (STABLE VERSION)
+  
+🚀 Панель управления запущена на http://localhost:3000
+🌍 Режим: STABLE DEMO
+📁 Статические файлы: /home/pc/.openclaw/workspace/openclaw-cyberpunk-panel/public
+
+📋 Доступные эндпоинты:
+   • Панель управления: http://localhost:3000
+   • GitHub API: http://localhost:3000/api/github
+   • Health check: http://localhost:3000/health
+   • System info: http://localhost:3000/system/info
+   • Simple version: http://localhost:3000/simple
+
+🔗 GitHub Integration:
+   • Mode: DEMO (stable data)
+   • WebSocket: ✅ Active
+   • Real-time: ✅ Enabled
+   • Status: ✅ WORKING
+
+🛑 Для остановки нажмите Ctrl+C
+    
+✅ GitHub cache initialized

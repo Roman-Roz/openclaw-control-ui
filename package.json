@@ -1,0 +1,55 @@
+{
+  "name": "openclaw-cyberpunk-panel",
+  "version": "1.0.0",
+  "description": "Киберпанк-панель управления для OpenClaw с неоновым дизайном и полным функционалом",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server-final.js",
+    "dev": "nodemon server-final.js",
+    "simple": "node server-minimal.js",
+    "fixed": "node server-fixed.js",
+    "github": "node server-with-github.js",
+    "real": "node server-real-github.js",
+    "simple-github": "node server-simple-github.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "openclaw",
+    "cyberpunk",
+    "control-panel",
+    "dashboard",
+    "ai",
+    "gateway",
+    "neon",
+    "ui"
+  ],
+  "author": "OpenClaw Community",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "nodemailer": "^8.0.3",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "morgan": "^1.10.1",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openclaw/openclaw-cyberpunk-panel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openclaw/openclaw-cyberpunk-panel/issues"
+  },
+  "homepage": "https://github.com/openclaw/openclaw-cyberpunk-panel#readme"
+}
