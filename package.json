@@ -1,16 +1,12 @@
 {
-  "name": "openclaw-cyberpunk-panel",
-  "version": "1.0.0",
-  "description": "Киберпанк-панель управления для OpenClaw с неоновым дизайном и полным функционалом",
-  "main": "server.js",
+  "name": "openclaw-control-ui",
+  "version": "2.0.0",
+  "description": "OpenClaw Control UI - Cyberpunk Control Panel for Vercel Deployment",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server-final.js",
-    "dev": "nodemon server-final.js",
-    "simple": "node server-minimal.js",
-    "fixed": "node server-fixed.js",
-    "github": "node server-with-github.js",
-    "real": "node server-real-github.js",
-    "simple-github": "node server-simple-github.js",
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js",
+    "build": "echo 'Build step not required for static site'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

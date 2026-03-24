@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server-final.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     },
     {
@@ -12,8 +12,15 @@
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "server-final.js"
+      "dest": "/public/$1"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }

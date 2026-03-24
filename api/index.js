@@ -1,30 +1,32 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
 
-// Основной маршрут
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+// API Routes
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// API маршруты
 app.get('/api/status', (req, res) => {
-  res.json({ 
-    status: 'online', 
-    project: 'openclaw-control-ui',
-    version: '1.0.0',
+  res.json({
+    project: 'OpenClaw Control UI',
+    version: '2.0',
+    environment: process.env.NODE_ENV || 'production',
+    deployed: true,
     timestamp: new Date().toISOString()
   });
 });
 
-// Обработка всех остальных маршрутов
+// Serve frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// Экспорт для Vercel
+// Export for Vercel
 module.exports = app;
