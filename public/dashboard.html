@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .agent-list, .task-list, .session-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .agent-item, .task-item, .session-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .agent-item.busy {
+            border-left-color: #f39c12;
+        }
+
+        .task-item.pending {
+            border-left-color: #3498db;
+        }
+
+        .task-item.in_progress {
+            border-left-color: #f39c12;
+        }
+
+        .task-item.completed {
+            border-left-color: #27ae60;
+        }
+
+        .task-item.failed {
+            border-left-color: #e74c3c;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .item-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-idle { background: #27ae60; }
+        .status-busy { background: #f39c12; }
+        .status-offline { background: #95a5a6; }
+        .status-pending { background: #3498db; }
+        .status-in_progress { background: #f39c12; }
+        .status-completed { background: #27ae60; }
+        .status-failed { background: #e74c3c; }
+
+        .item-details {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .refresh-btn {
+            float: right;
+            background: #3498db;
+        }
+
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+
+        #chat-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-message.user {
+            background: #e3f2fd;
+            border-left: 3px solid #2196f3;
+        }
+
+        .chat-message.assistant {
+            background: #e8f5e9;
+            border-left: 3px solid #4caf50;
+        }
+
+        .chat-message.system {
+            background: #fff3e0;
+            border-left: 3px solid #ff9800;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 OpenClaw Dashboard</h1>
+            <p>Multi-Agent Orchestration & Session Management Platform</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="total-agents">0</div>
+                <div class="stat-label">Total Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="busy-agents">0</div>
+                <div class="stat-label">Busy Agents</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-tasks">0</div>
+                <div class="stat-label">Active Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-sessions">0</div>
+                <div class="stat-label">Active Sessions</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Agents Panel -->
+            <div class="panel">
+                <h2>
+                    🤖 Agents
+                    <button class="btn refresh-btn" onclick="loadAgents()">Refresh</button>
+                </h2>
+                <div class="agent-list" id="agent-list">
+                    <div class="empty-state">Loading agents...</div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>Register New Agent</h3>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="agent-name" placeholder="Agent Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <input type="text" id="agent-role" placeholder="e.g., Code Reviewer">
+                    </div>
+                    <div class="form-group">
+                        <label>Specialty</label>
+                        <input type="text" id="agent-specialty" placeholder="e.g., python, javascript">
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" id="agent-model" placeholder="e.g., gpt-4">
+                    </div>
+                    <div class="form-group">
+                        <label>System Prompt</label>
+                        <textarea id="agent-system-prompt" rows="3" placeholder="You are a helpful assistant..."></textarea>
+                    </div>
+                    <button class="btn" onclick="registerAgent()">Register Agent</button>
+                </div>
+            </div>
+
+            <!-- Tasks Panel -->
+            <div class="panel">
+                <h2>
+                    📋 Tasks
+                    <button class="btn refresh-btn" onclick="loadTasks()">Refresh</button>
+                </h2>
+                <div class="task-list" id="task-list">
+                    <div class="empty-state">Loading tasks...</div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>Create New Task</h3>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="task-description" rows="3" placeholder="Describe the task..."></textarea>
+                    </div>
+                    <button class="btn" onclick="createTask()">Create Task</button>
+                </div>
+            </div>
+
+            <!-- Sessions Panel -->
+            <div class="panel">
+                <h2>
+                    💬 Sessions
+                    <button class="btn refresh-btn" onclick="loadSessions()">Refresh</button>
+                </h2>
+                <div class="session-list" id="session-list">
+                    <div class="empty-state">Loading sessions...</div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>New Chat Session</h3>
+                    <button class="btn" onclick="createSession()">Create Session</button>
+                </div>
+            </div>
+
+            <!-- Chat Panel -->
+            <div class="panel">
+                <h2>💬 Interactive Chat</h2>
+                <div class="form-group">
+                    <label>Session ID (optional)</label>
+                    <input type="text" id="chat-session-id" placeholder="Leave empty for new session">
+                </div>
+                <div id="chat-container"></div>
+                <div class="form-group">
+                    <label>Your Message</label>
+                    <textarea id="chat-message" rows="3" placeholder="Type your message..."></textarea>
+                </div>
+                <button class="btn" onclick="sendMessage()">Send Message</button>
+                <button class="btn btn-danger" onclick="clearChat()">Clear Chat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        // Load dashboard stats
+        async function loadStats() {
+            try {
+                const [orchStats, sessionStats] = await Promise.all([
+                    fetch(`${API_BASE}/orchestrator/stats`).then(r => r.json()),
+                    fetch(`${API_BASE}/sessions/stats`).then(r => r.json())
+                ]);
+
+                if (orchStats.success) {
+                    document.getElementById('total-agents').textContent = orchStats.stats.totalAgents;
+                    document.getElementById('busy-agents').textContent = orchStats.stats.busyAgents;
+                    document.getElementById('active-tasks').textContent = orchStats.stats.inProgressTasks;
+                }
+
+                if (sessionStats.success) {
+                    document.getElementById('active-sessions').textContent = sessionStats.stats.activeSessions;
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Load agents
+        async function loadAgents() {
+            try {
+                const response = await fetch(`${API_BASE}/orchestrator/agents`);
+                const data = await response.json();
+                
+                const container = document.getElementById('agent-list');
+                if (!data.success || data.agents.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No agents registered</div>';
+                    return;
+                }
+
+                container.innerHTML = data.agents.map(agent => `
+                    <div class="agent-item ${agent.status}">
+                        <div class="item-header">
+                            <span class="item-title">${agent.name}</span>
+                            <span class="item-status status-${agent.status}">${agent.status}</span>
+                        </div>
+                        <div class="item-details">
+                            <strong>Role:</strong> ${agent.role}<br>
+                            <strong>Specialty:</strong> ${agent.specialty}<br>
+                            <strong>Model:</strong> ${agent.model}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load agents:', error);
+            }
+        }
+
+        // Load tasks
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${API_BASE}/orchestrator/tasks`);
+                const data = await response.json();
+                
+                const container = document.getElementById('task-list');
+                if (!data.success || data.tasks.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No tasks created</div>';
+                    return;
+                }
+
+                container.innerHTML = data.tasks.slice(-10).reverse().map(task => `
+                    <div class="task-item ${task.status}">
+                        <div class="item-header">
+                            <span class="item-title">${task.description.substring(0, 50)}${task.description.length > 50 ? '...' : ''}</span>
+                            <span class="item-status status-${task.status}">${task.status.replace('_', ' ')}</span>
+                        </div>
+                        <div class="item-details">
+                            <strong>Created:</strong> ${new Date(task.createdAt).toLocaleString()}<br>
+                            ${task.assignedTo ? `<strong>Agent:</strong> ${task.assignedTo}<br>` : ''}
+                            ${task.result ? `<strong>Result:</strong> ${task.result.substring(0, 50)}...` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load tasks:', error);
+            }
+        }
+
+        // Load sessions
+        async function loadSessions() {
+            try {
+                const response = await fetch(`${API_BASE}/sessions`);
+                const data = await response.json();
+                
+                const container = document.getElementById('session-list');
+                if (!data.success || data.sessions.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No active sessions</div>';
+                    return;
+                }
+
+                container.innerHTML = data.sessions.slice(-10).reverse().map(session => `
+                    <div class="session-item">
+                        <div class="item-header">
+                            <span class="item-title">${session.id.substring(0, 8)}...</span>
+                            <span class="item-status status-idle">${session.messages.length} messages</span>
+                        </div>
+                        <div class="item-details">
+                            <strong>Created:</strong> ${new Date(session.createdAt).toLocaleString()}<br>
+                            <strong>Updated:</strong> ${new Date(session.updatedAt).toLocaleString()}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load sessions:', error);
+            }
+        }
+
+        // Register agent
+        async function registerAgent() {
+            const name = document.getElementById('agent-name').value;
+            const role = document.getElementById('agent-role').value;
+            const specialty = document.getElementById('agent-specialty').value;
+            const model = document.getElementById('agent-model').value;
+            const systemPrompt = document.getElementById('agent-system-prompt').value;
+
+            if (!name || !role || !specialty || !model || !systemPrompt) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/orchestrator/agents`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, role, specialty, model, systemPrompt })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Agent registered successfully!');
+                    document.getElementById('agent-name').value = '';
+                    document.getElementById('agent-role').value = '';
+                    document.getElementById('agent-specialty').value = '';
+                    document.getElementById('agent-model').value = '';
+                    document.getElementById('agent-system-prompt').value = '';
+                    loadAgents();
+                    loadStats();
+                } else {
+                    alert('Failed to register agent: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Create task
+        async function createTask() {
+            const description = document.getElementById('task-description').value;
+            
+            if (!description) {
+                alert('Please enter a task description');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/orchestrator/tasks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Task created successfully!');
+                    document.getElementById('task-description').value = '';
+                    loadTasks();
+                    loadStats();
+                } else {
+                    alert('Failed to create task: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Create session
+        async function createSession() {
+            try {
+                const response = await fetch(`${API_BASE}/sessions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Session created: ' + data.session.id);
+                    document.getElementById('chat-session-id').value = data.session.id;
+                    loadSessions();
+                    loadStats();
+                } else {
+                    alert('Failed to create session: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Send chat message
+        async function sendMessage() {
+            const sessionId = document.getElementById('chat-session-id').value;
+            const message = document.getElementById('chat-message').value;
+
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            const container = document.getElementById('chat-container');
+            
+            // Add user message to chat
+            container.innerHTML += `
+                <div class="chat-message user">
+                    <strong>You:</strong> ${message}
+                </div>
+            `;
+
+            document.getElementById('chat-message').value = '';
+
+            try {
+                // Add message to session
+                if (sessionId) {
+                    await fetch(`${API_BASE}/sessions/${sessionId}/messages`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'user', content: message })
+                    });
+                }
+
+                // Get response from gateway
+                const response = await fetch(`${API_BASE}/gateway/command`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        model: 'default',
+                        command: message
+                    })
+                });
+
+                const data = await response.json();
+                const assistantMessage = data.response || 'No response';
+
+                // Add assistant message to chat
+                container.innerHTML += `
+                    <div class="chat-message assistant">
+                        <strong>Assistant:</strong> ${assistantMessage}
+                    </div>
+                `;
+
+                // Save assistant response to session
+                if (sessionId) {
+                    await fetch(`${API_BASE}/sessions/${sessionId}/messages`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role: 'assistant', content: assistantMessage })
+                    });
+                }
+
+                container.scrollTop = container.scrollHeight;
+            } catch (error) {
+                container.innerHTML += `
+                    <div class="chat-message system">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Clear chat
+        function clearChat() {
+            document.getElementById('chat-container').innerHTML = '';
+        }
+
+        // Initial load
+        loadStats();
+        loadAgents();
+        loadTasks();
+        loadSessions();
+
+        // Auto-refresh every 10 seconds
+        setInterval(() => {
+            loadStats();
+            loadAgents();
+            loadTasks();
+        }, 10000);
+    </script>
+</body>
+</html>
