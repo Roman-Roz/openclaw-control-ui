@@ -22,6 +22,10 @@ const wsManager = require('./services/websocketService');
 const gatewayService = require('./services/gatewayService');
 const schedulerService = require('./services/schedulerService');
 const cacheService = require('./services/cacheService');
+const TaskQueueService = require('./services/taskQueueService').default;
+const SessionMemoryService = require('./services/sessionMemoryService').default;
+const StreamingService = require('./services/streamingService').default;
+const MultiAgentOrchestrator = require('./services/orchestratorService').default;
 
 // Логгер
 const logger = require('./utils/logger');
@@ -30,6 +34,10 @@ const logger = require('./utils/logger');
 const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
 const monitoringRoutes = require('./routes/monitoring');
+const tasksRoutes = require('./routes/tasks').default;
+const githubRoutes = require('./routes/github').default;
+const sessionsRoutes = require('./routes/sessions').default;
+const orchestratorRoutes = require('./routes/orchestrator').default;
 
 // Создаём Express приложение
 const app = express();
@@ -76,6 +84,27 @@ app.use('/api/monitoring', monitoringRoutes);
 
 // API маршруты
 app.use('/api', apiRoutes);
+
+// Task Queue маршруты
+app.use('/api', tasksRoutes);
+
+// GitHub Integration маршруты
+app.use('/api/github', githubRoutes);
+
+// Session Management маршруты
+const sessionService = new SessionMemoryService();
+const streamingService = new StreamingService(gatewayService, sessionService);
+app.use('/api/sessions', sessionsRoutes.initializeSessionRoutes(sessionService, streamingService));
+
+// Multi-Agent Orchestrator маршруты
+const orchestrator = new MultiAgentOrchestrator();
+app.use('/api/orchestrator', orchestratorRoutes.initializeOrchestratorRoutes(orchestrator));
+
+// Сохраняем сервисы в global для доступа из других модулей
+global.taskQueueService = new TaskQueueService();
+global.sessionService = sessionService;
+global.streamingService = streamingService;
+global.orchestrator = orchestrator;
 
 // Health check
 app.get('/health', (req, res) => {
@@ -166,6 +195,9 @@ function startServer() {
       // Инициализация WebSocket
       wsManager.init(server);
       
+      // Инициализация Streaming Service (Socket.IO)
+      streamingService.initialize(server);
+      
       // Запуск планировщика задач
       schedulerService.start();
       
@@ -211,6 +243,12 @@ function startServer() {
       console.log(`   • System info: http://localhost:${config.port}/system/info`);
       console.log(`   • WebSocket stats: http://localhost:${config.port}/ws/stats`);
       console.log(`   • Gateway API: http://localhost:${config.port}/api/*`);
+      console.log(`   • Task Queue API: http://localhost:${config.port}/api/tasks/*`);
+      console.log(`   • GitHub API: http://localhost:${config.port}/api/github/*`);
+      console.log(`   • Sessions API: http://localhost:${config.port}/api/sessions/*`);
+      console.log(`   • Orchestrator API: http://localhost:${config.port}/api/orchestrator/*`);
+      console.log(`   • Dashboard: http://localhost:${config.port}/dashboard.html`);
+      console.log(`   • WebSocket Streaming: ws://localhost:${config.port}`);
       console.log('');
       console.log('🔐 Демо пользователь: admin / admin123');
       console.log('');
@@ -237,8 +275,25 @@ function gracefulShutdown(signal) {
   // Отключение Redis
   cacheService.disconnect();
   
-  // Очистка WebSocket
+  // Остановка очереди задач
+  if (global.taskQueueService) {
+    global.taskQueueService.close().catch(err => {
+      logger.error('Error closing task queue service', err);
+    });
+  }
+  
+  // Отключение WebSocket
   wsManager.cleanup();
+  
+  // Остановка Streaming Service
+  if (global.streamingService) {
+    global.streamingService.shutdown();
+  }
+  
+  // Остановка Orchestrator
+  if (global.orchestrator) {
+    global.orchestrator.shutdown();
+  }
   
   if (server) {
     server.close(() => {
