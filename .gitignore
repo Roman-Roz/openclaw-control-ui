@@ -2,12 +2,12 @@
 # Dependencies
 node_modules/
 
-# Build artifacts
+# Cache directories
+.npm-cache/
+
+# Build outputs
 dist/
 build/
-target/
-
-# Coverage reports
 coverage/
 
 # Environment variables
@@ -18,25 +18,15 @@ coverage/
 # Logs
 *.log
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
 # Temporary files
 *.tmp
+*.swp
 
-# OS generated files
+# IDE specific
+.vscode/
+.idea/
+
+# OS generated
 .DS_Store
 Thumbs.db
-
-# Package lock files
-package-lock.json
 ```
