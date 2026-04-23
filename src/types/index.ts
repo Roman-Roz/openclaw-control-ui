@@ -42,7 +42,7 @@ export interface User {
 }
 
 export interface WebSocketMessage {
-  type: 'status' | 'metrics' | 'alert' | 'command' | 'response' | 'welcome' | 'pong' | 'error' | 'subscribed';
+  type: 'status' | 'metrics' | 'alert' | 'command' | 'response' | 'welcome' | 'pong' | 'error' | 'subscribed' | 'ping' | 'subscribe';
   payload: any;
   timestamp?: Date;
 }

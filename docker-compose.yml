@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Redis для очереди задач и кэширования
+  redis:
+    image: redis:7-alpine
+    container_name: openclaw-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # OpenClaw Control Panel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openclaw-panel
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - GATEWAY_URL=http://host.docker.internal:18789
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - SESSION_TTL=3600
+      - LOG_LEVEL=info
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - app-logs:/app/logs
+      - ./public:/app/public:ro
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - openclaw-network
+
+volumes:
+  redis-data:
+    driver: local
+  app-logs:
+    driver: local
+
+networks:
+  openclaw-network:
+    driver: bridge
