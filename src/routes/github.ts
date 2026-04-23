@@ -289,4 +289,189 @@ router.get('/cache/stats', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * 📊 Инициализировать модуль статистики
+ */
+router.post('/stats/init', async (req: Request, res: Response) => {
+  try {
+    const { username } = req.body;
+    const service = getGitHubService();
+    const stats = await service.initializeStatsModule(username || null);
+    
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 📊 Получить текущую статистику
+ */
+router.get('/stats', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const stats = service.getStats();
+    
+    if (!stats) {
+      return res.status(404).json({ error: 'Stats not initialized. Call /stats/init first.' });
+    }
+    
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 📊 Обновить статистику
+ */
+router.post('/stats/refresh', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const stats = await service.calculateStats();
+    
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 📊 Получить детальную статистику репозитория
+ */
+router.get('/stats/:owner/:repo', async (req: Request, res: Response) => {
+  try {
+    const { owner, repo } = req.params;
+    const service = getGitHubService();
+    const stats = await service.getRepoDetailedStats(owner, repo);
+    
+    res.json(stats);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Инициализировать модуль мониторинга Issues
+ */
+router.post('/issues/init', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const result = await service.initializeIssuesModule();
+    
+    res.json({ status: 'initialized', config: result });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Добавить репозиторий для отслеживания
+ */
+router.post('/issues/watch', async (req: Request, res: Response) => {
+  try {
+    const { owner, repo, config } = req.body;
+    
+    if (!owner || !repo) {
+      return res.status(400).json({ error: 'owner and repo are required' });
+    }
+    
+    const service = getGitHubService();
+    service.watchRepo(owner, repo, config);
+    
+    res.json({ status: 'watching', repo: `${owner}/${repo}` });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Удалить репозиторий из отслеживания
+ */
+router.delete('/issues/unwatch/:owner/:repo', async (req: Request, res: Response) => {
+  try {
+    const { owner, repo } = req.params;
+    const service = getGitHubService();
+    service.unwatchRepo(owner, repo);
+    
+    res.json({ status: 'unwatched', repo: `${owner}/${repo}` });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Получить список отслеживаемых репозиториев
+ */
+router.get('/issues/watching', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const watched = service.getWatchedRepos();
+    
+    res.json(watched);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Проверить новые issues
+ */
+router.post('/issues/check', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const result = await service.checkForNewIssues();
+    
+    res.json(result);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 🔔 Подписаться на уведомления (WebSocket)
+ */
+router.get('/issues/subscribe', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    const unsubscribe = service.subscribe((data: any) => {
+      console.log('Notification:', data);
+      // В реальном приложении здесь будет отправка через WebSocket
+    });
+    
+    res.json({ status: 'subscribed', message: 'Subscription active for this session' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 📊 Запустить авто-обновление статистики
+ */
+router.post('/stats/auto-refresh/start', async (req: Request, res: Response) => {
+  try {
+    const { interval = 300000 } = req.body;
+    const service = getGitHubService();
+    service.startAutoRefresh(interval);
+    
+    res.json({ status: 'started', interval });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * 📊 Остановить авто-обновление статистики
+ */
+router.post('/stats/auto-refresh/stop', async (req: Request, res: Response) => {
+  try {
+    const service = getGitHubService();
+    service.stopAutoRefresh();
+    
+    res.json({ status: 'stopped' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
